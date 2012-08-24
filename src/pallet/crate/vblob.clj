@@ -45,8 +45,8 @@ https://github.com/cloudfoundry/vblob"
   {:user "vblob"
    :home "/usr/local/vblob"
    :version "1.0-SNAPSHOT"
-   :s3-port 9981
-   :drivers {:fs-1 {:type "fs" :option {}}}
+   :port 9981
+   :drivers [{:fs-1 {:type "fs" :option {}}}]
    :current_driver "fs-1"
    :logtype "winston"
    :logfile "/usr/local/vblob/log.txt"
@@ -86,10 +86,10 @@ https://github.com/cloudfoundry/vblob"
 :user
 :home
 :version
-:s3-port
+:port
 
 :download"
-  [session {:keys [version user home s3-port download instance-id]
+  [session {:keys [version user home port download instance-id]
             :or {version "1.0-SNAPSHOT"}
             :as settings}]
   (let [settings (settings-map session (merge {:version version} settings))]
@@ -103,8 +103,8 @@ https://github.com/cloudfoundry/vblob"
   [session {:keys [user download home] :as settings}]
   (->
    session
-   (user/user user :system true :shell "/bin/false")
-   (apply-map-> remote-directory home :user user download)))
+   (user/user user :system true :home home :shell "/bin/false")
+   (apply-map-> remote-directory home :owner user download)))
 
 (defn install-vblob
   "Install vblob. By default will install as a war into jetty."
@@ -123,7 +123,10 @@ https://github.com/cloudfoundry/vblob"
 (defn configure-vblob
   [session & {:keys [instance-id]}]
   (let [{:keys [home user] :as settings}
-        (get-target-settings session :vblob instance-id ::no-settings)]
+        (get-target-settings session :vblob instance-id ::no-settings)
+        settings (-> settings
+                     (dissoc :version)
+                     (update-in [:port] str))]
     (remote-file
      session (str home "/config.json")
      :content (generate-string settings {:pretty true})
@@ -132,22 +135,11 @@ https://github.com/cloudfoundry/vblob"
 ;;; # Forever based service
 (defn vblob-forever
   [session & {:keys [action max instance-id]
-              :or {action :start max 1}}]
+              :as options}]
   (let [{:keys [home user] :as settings}
         (get-target-settings session :vblob instance-id ::no-settings)]
-    (case action
-      :start
-      (exec-checked-script
-       session
-       "Starting vblob using forever"
-       (sudo -n -H -u ~user
-             sh -c (quoted (cd ~home) (forever -m max start ./server.js))))
-      :stop
-      (exec-checked-script
-       session
-       "Stopping vblob using forever"
-       (sudo -n -H -u ~user
-             sh -c (quoted (cd ~home) (forever stop ./server.js)))))))
+    (apply-map forever-service session "server.js"
+               (assoc options :dir home))))
 
 ;;; # Server spec
 (defn vblob

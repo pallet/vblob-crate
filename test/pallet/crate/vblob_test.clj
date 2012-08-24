@@ -52,23 +52,16 @@
 (def node-deb
   "https://raw.github.com/cinderella/deploy/master/debs/nodejs-0.6.10_amd64.deb")
 
-;; (defn install-forever
-;;   [session & {:keys [version] :or {version "0.9.2"}}]
-;;   (->
-;;    session
-;;    (package "libssl0.9.8")
-;;    (exec-checked-script
-;;     "Install forever"
-;;     (npm install (str "forever@" ~version) -g --quiet -y))))
-
 (def-clj-action verify-vblob
   [session group-name & {:keys [instance-id]}]
-  (let [{:keys [home user s3-port keyID secretID] :as settings}
+  (let [{:keys [home user port keyID secretID] :as settings}
         (get-target-settings session :vblob instance-id ::no-settings)
         node (first (nodes-in-group session group-name))
-        endpoint (format "http://%s:%s/" (primary-ip node) s3-port)
+        endpoint (format "http://%s:%s/" (primary-ip node) port)
         _ (logging/debugf "Testing with %s %s %s" keyID secretID endpoint)
-        bs (blobstore "aws-s3" keyID secretID :endpoint endpoint)]
+        bs (blobstore "s3" keyID secretID
+                      :s3.endpoint endpoint
+                      :jclouds.s3.virtual-host-buckets false)]
     (is bs "Blobstore contactable")
     (is (containers bs) "Blobstore containers listable")
     (logging/infof "Blobstore containers %s" (vec (containers bs)))

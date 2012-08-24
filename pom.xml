@@ -33,10 +33,20 @@
       <version>${jclouds.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.cloudhoist</groupId>
+      <artifactId>pallet-jclouds</artifactId>
+      <version>${palletjclouds.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jclouds</groupId>
+      <artifactId>jclouds-all</artifactId>
+      <version>${jclouds.version}</version>
+    </dependency>
   </dependencies>
 
   <properties>
     <jclouds.version>1.5.0-beta.9</jclouds.version>
-    <pallet-jclouds.version>1.5.0-SNAPSHOT</pallet-jclouds.version>
+    <palletjclouds.version>1.5.0-SNAPSHOT</palletjclouds.version>
   </properties>
 </project>
