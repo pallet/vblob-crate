@@ -146,7 +146,8 @@ https://github.com/cloudfoundry/vblob"
   "Returns a service-spec for installing vblob."
   [settings]
   (server-spec
-   :phase {:settings (phase-fn (vblob-settings settings))
-           :configure (phase-fn
-                        (install-vblob)
-                        (configure-vblob))}))
+   :phases {:settings (phase-fn
+                        (vblob-settings settings))
+            :configure (phase-fn
+                         (install-vblob)
+                         (configure-vblob))}))
