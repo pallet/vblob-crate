@@ -123,7 +123,7 @@ https://github.com/cloudfoundry/vblob"
 (defn configure-vblob
   [session & {:keys [instance-id]}]
   (let [{:keys [home user] :as settings}
-        (get-target-settings session :vblob instance-id ::no-settings)
+        (get-target-settings session :vblob instance-id)
         settings (-> settings
                      (dissoc :version)
                      (update-in [:port] str))]
@@ -137,7 +137,7 @@ https://github.com/cloudfoundry/vblob"
   [session & {:keys [action max instance-id]
               :as options}]
   (let [{:keys [home user] :as settings}
-        (get-target-settings session :vblob instance-id ::no-settings)]
+        (get-target-settings session :vblob instance-id)]
     (apply-map forever-service session "server.js"
                (assoc options :dir home))))
 
