@@ -37,11 +37,13 @@
       <groupId>org.cloudhoist</groupId>
       <artifactId>pallet-jclouds</artifactId>
       <version>${palletjclouds.version}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.jclouds</groupId>
-      <artifactId>jclouds-all</artifactId>
+      <groupId>org.jclouds.provider</groupId>
+      <artifactId>aws-s3</artifactId>
       <version>${jclouds.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
