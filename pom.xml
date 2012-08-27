@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.cloudhoist</groupId>
     <artifactId>pallet-crate-pom</artifactId>
-    <version>0.7.1</version>
+    <version>0.7.2-SNAPSHOT</version>
     <relativePath />
   </parent>
   <artifactId>vblob</artifactId>
@@ -28,12 +28,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.jclouds.api</groupId>
-      <artifactId>s3</artifactId>
-      <version>${jclouds.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.cloudhoist</groupId>
       <artifactId>pallet-jclouds</artifactId>
       <version>${palletjclouds.version}</version>
@@ -47,8 +41,4 @@
     </dependency>
   </dependencies>
 
-  <properties>
-    <jclouds.version>1.5.0-beta.9</jclouds.version>
-    <palletjclouds.version>1.5.0-SNAPSHOT</palletjclouds.version>
-  </properties>
 </project>
